@@ -17,25 +17,23 @@
         class="bi bi-arrow-bar-down absolute top-1/2 right-3 transform -translate-y-1/2 text-blue-500 cursor-pointer text-lg hover:text-blue-700 shadow-lg"
       ></i>
       <ul
-        v-show="isDropdownOpen && filteredUsers.length > 0"
+        v-show="isDropdownOpen && filteredData.length > 0"
         class="menu bg-base-200 w-full rounded-box shadow-lg mt-2 absolute z-10"
       >
-        <!-- TO-DO: ul içine tailwind'ten "hidden" özelliği ver :class olarak -->
         <span
           class="loading loading-spinner loading-sm text-blue-500"
           :class="isLoading ? '' : 'hidden'"
         ></span>
         <div class="max-h-56 overflow-y-scroll">
-          <li><a class="menu-title">Select a user</a></li>
+          <li>
+            <a class="menu-title"><slot name="menuTitle" /></a>
+          </li>
           <li
-            v-for="(user, i) in filteredUsers"
+            v-for="(user, i) in filteredData"
             :key="i"
             :class="{ 'bg-blue-500 text-white': highlightedIndex === i }"
-            @click="selectUser(user)"
           >
-            <a class="menu">
-              {{ user }}
-            </a>
+            <slot name="item" :data="user" :onSelect="selectUser" />
           </li>
         </div>
       </ul>
@@ -45,22 +43,16 @@
 
 <script>
 export default {
+  props: ["selected", "filteredData"],
   data() {
     return {
       isLoading: true,
       searchTerm: "",
       isDropdownOpen: false,
       highlightedIndex: -1,
-      data: ["Tuna", "test", "sdfasfas", "dsaffas", "zczcva"],
     };
   },
-  computed: {
-    filteredUsers() {
-      return this.data.filter(user =>
-        user.toLowerCase().includes(this.searchTerm.toLowerCase())
-      );
-    },
-  },
+
   methods: {
     openDropdown() {
       this.isDropdownOpen = true;
@@ -69,6 +61,8 @@ export default {
       this.isDropdownOpen = false;
     },
     selectUser(user) {
+      this.$emit("selectedData", user);
+      console.log(user);
       this.searchTerm = user;
       this.isDropdownOpen = false;
     },
