@@ -30,7 +30,7 @@
             </a>
           </li>
           <li
-            v-for="(item, index) in allData"
+            v-for="(item, index) in filterSearchItems"
             :key="index"
             :class="{ 'bg-blue-500 text-white': highlightedIndex === index }"
           >
@@ -44,7 +44,7 @@
 
 <script>
 export default {
-  props: ["selected", "allData"],
+  props: ["selected", "allData", "searchFilterItem"],
   data() {
     return {
       isLoading: true,
@@ -52,6 +52,16 @@ export default {
       isDropdownOpen: false,
       highlightedIndex: -1,
     };
+  },
+
+  computed: {
+    filterSearchItems() {
+      return this.allData.filter(item =>
+        item.value[this.searchFilterItem]
+          .toLowerCase()
+          .includes(this.searchTerm.toLowerCase())
+      );
+    },
   },
 
   methods: {

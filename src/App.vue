@@ -1,6 +1,10 @@
 <template>
   <div id="app">
-    <ComboBox :selected="selected" :allData="data">
+    <ComboBox
+      :selected="selected"
+      :allData="data"
+      :searchFilterItem="searchForName"
+    >
       <template v-slot:menuTitle>
         <div>Test Menu Title</div>
       </template>
@@ -25,6 +29,7 @@ export default {
       selected: 1,
       currentData: "",
       data: [],
+      searchForName: "name",
     };
   },
 
