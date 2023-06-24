@@ -1,16 +1,13 @@
 <template>
   <div id="app">
-    <ComboBox
-      :selected="selected"
-      :filteredData="filteredUserNames"
-      @selectedData="selectedData"
-    >
+    <ComboBox :selected="selected" :allData="data">
       <template v-slot:menuTitle>
         <div>Test Menu Title</div>
       </template>
       <template v-slot:item="slotProps">
         <div>
-          {{ slotProps.data.value.name }} - {{ slotProps.data.value.surname }}
+          {{ slotProps.data.key }} - {{ slotProps.data.value.name }} -
+          {{ slotProps.data.value.surname }}
         </div>
       </template>
     </ComboBox>
@@ -27,27 +24,26 @@ export default {
     return {
       selected: 1,
       currentData: "",
-      filteredUserNames: [],
+      data: [],
     };
   },
 
   methods: {
     selectedData(user) {
-      this.currentData = user;
+      this.selected = user;
     },
 
-    async filteredUsers() {
+    async getUsers() {
       try {
         const response = await fetch("http://localhost:3000/users");
-        const data = await response.json();
-        this.filteredUserNames = data;
+        this.data = await response.json();
       } catch (error) {
         console.log(error);
       }
     },
   },
   mounted() {
-    this.filteredUsers();
+    this.getUsers();
   },
 };
 </script>

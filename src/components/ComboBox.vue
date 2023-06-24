@@ -7,7 +7,6 @@
         placeholder="Type here"
         class="input input-bordered w-full pr-10"
         v-model="searchTerm"
-        @input="filterUsers"
         @focus="openDropdown"
         @blur="closeDropdown"
         @keydown.arrow-up.prevent="highlightPrevUser"
@@ -17,7 +16,7 @@
         class="bi bi-arrow-bar-down absolute top-1/2 right-3 transform -translate-y-1/2 text-blue-500 cursor-pointer text-lg hover:text-blue-700 shadow-lg"
       ></i>
       <ul
-        v-show="isDropdownOpen && filteredData.length > 0"
+        v-show="isDropdownOpen && allData.length > 0"
         class="menu bg-base-200 w-full rounded-box shadow-lg mt-2 absolute z-10"
       >
         <span
@@ -26,14 +25,16 @@
         ></span>
         <div class="max-h-56 overflow-y-scroll">
           <li>
-            <a class="menu-title"><slot name="menuTitle" /></a>
+            <a class="menu-title">
+              <slot name="menuTitle" />
+            </a>
           </li>
           <li
-            v-for="(user, i) in filteredData"
-            :key="i"
-            :class="{ 'bg-blue-500 text-white': highlightedIndex === i }"
+            v-for="(item, index) in allData"
+            :key="index"
+            :class="{ 'bg-blue-500 text-white': highlightedIndex === index }"
           >
-            <slot name="item" :data="user" :onSelect="selectUser" />
+            <slot name="item" :data="item" />
           </li>
         </div>
       </ul>
@@ -43,7 +44,7 @@
 
 <script>
 export default {
-  props: ["selected", "filteredData"],
+  props: ["selected", "allData"],
   data() {
     return {
       isLoading: true,
@@ -60,24 +61,15 @@ export default {
     closeDropdown() {
       this.isDropdownOpen = false;
     },
-    selectUser(user) {
-      this.$emit("selectedData", user);
-      console.log(user);
-      this.searchTerm = user;
-      this.isDropdownOpen = false;
-    },
     highlightPrevUser() {
       if (this.highlightedIndex > 0) {
         this.highlightedIndex--;
       }
     },
     highlightNextUser() {
-      if (this.highlightedIndex < this.filteredUsers.length - 1) {
+      if (this.highlightedIndex < this.allData.length - 1) {
         this.highlightedIndex++;
       }
-    },
-    filterUsers() {
-      this.highlightedIndex = -1;
     },
   },
 };
