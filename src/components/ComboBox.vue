@@ -8,7 +8,7 @@
         class="input input-bordered w-full pr-10"
         v-model="searchTerm"
         @focus="openDropdown"
-        @blur="closeDropdown"
+        @keyup="loadAnimate"
         @keydown.arrow-up.prevent="highlightPrevUser"
         @keydown.arrow-down.prevent="highlightNextUser"
       />
@@ -19,20 +19,21 @@
         v-show="isDropdownOpen && allData.length > 0"
         class="menu bg-base-200 w-full rounded-box shadow-lg mt-2 absolute z-10"
       >
-        <span
-          class="loading loading-spinner loading-sm text-blue-500"
-          :class="isLoading ? '' : 'hidden'"
-        ></span>
         <div class="max-h-56 overflow-y-scroll">
           <li>
             <a class="menu-title">
               <slot name="menuTitle" />
             </a>
           </li>
+          <span
+            class="loading loading-spinner loading-sm text-blue-500"
+            :class="isLoading ? '' : 'hidden'"
+          ></span>
           <li
             v-for="(item, index) in filterSearchItems"
             :key="index"
             :class="{ 'bg-blue-500 text-white': highlightedIndex === index }"
+            @click="selectItem(item)"
           >
             <slot name="item" :data="item" />
           </li>
@@ -44,10 +45,10 @@
 
 <script>
 export default {
-  props: ["selected", "allData", "searchFilterItem"],
+  props: ["allData", "searchFilterItem"],
   data() {
     return {
-      isLoading: true,
+      isLoading: false,
       searchTerm: "",
       isDropdownOpen: false,
       highlightedIndex: -1,
@@ -80,6 +81,16 @@ export default {
       if (this.highlightedIndex < this.allData.length - 1) {
         this.highlightedIndex++;
       }
+    },
+    selectItem(item) {
+      this.searchTerm = item.value[this.searchFilterItem];
+      this.isDropdownOpen = false;
+    },
+    loadAnimate() {
+      this.isLoading = true;
+      setTimeout(() => {
+        this.isLoading = false;
+      }, 500);
     },
   },
 };

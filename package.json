@@ -6,7 +6,8 @@
     "dev": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "db-json": "json-server --watch src/db.json --port 3000"
+    "db-json": "json-server --watch src/db.json --port 3000",
+    "test-json": "json-server --watch src/test.json --port 3001"
   },
   "dependencies": {
     "core-js": "^3.8.3",
