@@ -45,11 +45,11 @@
 
 <script>
 export default {
-  props: ["allData", "searchFilterItem"],
+  props: ["allData", "searchFilterItem", "inputValue"],
   data() {
     return {
       isLoading: false,
-      searchTerm: "",
+      searchTerm: this.inputValue,
       isDropdownOpen: false,
       highlightedIndex: -1,
     };
@@ -82,8 +82,9 @@ export default {
         this.highlightedIndex++;
       }
     },
-    selectItem(item) {
-      this.searchTerm = item.value[this.searchFilterItem];
+    async selectItem(item) {
+      await this.$emit("select-item", item);
+      this.searchTerm = this.inputValue;
       this.isDropdownOpen = false;
     },
     loadAnimate() {

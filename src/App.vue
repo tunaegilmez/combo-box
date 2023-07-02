@@ -1,6 +1,11 @@
 <template>
   <div id="app">
-    <ComboBox :allData="data" :searchFilterItem="searchForName">
+    <ComboBox
+      :allData="data"
+      :searchFilterItem="searchForName"
+      @select-item="selectItem"
+      :inputValue="inputValue"
+    >
       <template v-slot:menuTitle>
         <div>Users</div>
       </template>
@@ -31,6 +36,7 @@ export default {
     return {
       data: [],
       searchForName: "name",
+      inputValue: "",
     };
   },
 
@@ -42,6 +48,10 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+
+    selectItem(item) {
+      this.inputValue = `${item.value.name} - ${item.value.surname}`;
     },
   },
   mounted() {
