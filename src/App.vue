@@ -5,6 +5,7 @@
       :searchFilterItem="searchForName"
       @select-item="selectItem"
       :inputValue="inputValue"
+      @load-more="loadMore"
     >
       <template v-slot:menuTitle>
         <div>Users</div>
@@ -18,33 +19,51 @@
     </ComboBox>
 
     <!-- Test Combo-Box -->
-    <div>
+    <!-- <div>
       <ThisTest></ThisTest>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
 import ComboBox from "./components/ComboBox.vue";
-import ThisTest from "./components/ThisTest.vue";
+// import ThisTest from "./components/ThisTest.vue";
 export default {
   components: {
     ComboBox,
-    ThisTest,
+    // ThisTest,
   },
   data() {
     return {
       data: [],
+      moreData: [],
       searchForName: "name",
       inputValue: "",
+      limit: 10,
+      skip: 0,
     };
   },
 
   methods: {
     async getUsers() {
       try {
-        const response = await fetch("http://localhost:3000/users");
+        const response = await fetch(
+          `http://localhost:3000/users?_limit=${this.limit}&_skip=${this.skip}`
+        );
         this.data = await response.json();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async loadMore() {
+      this.limit += 10;
+      try {
+        const response = await fetch(
+          `http://localhost:3000/users?_limit=${this.limit}&_skip=${this.skip}`
+        );
+        this.moreData = await response.json();
+        this.data = [...this.moreData];
       } catch (error) {
         console.log(error);
       }
