@@ -21,6 +21,9 @@
 </template>
 <script>
 import ComboBox from "./ComboBox.vue";
+
+import emploeeService from "../service/employeeService.js";
+
 export default {
   components: {
     ComboBox,
@@ -38,19 +41,17 @@ export default {
   methods: {
     async getUsers() {
       try {
-        const response = await fetch(
-          `http://localhost:3001/employees?_limit=${this.limit}&_skip=${this.skip}`
-        );
-        this.data = await response.json();
+        const response = await emploeeService.getEmployees();
+        this.data = response;
+        console.log(this.data);
       } catch (error) {
         console.log(error);
       }
     },
 
-    async loadMore(e) {
+    async loadMore() {
       this.limit += 10;
       try {
-        console.log(e);
         const response = await fetch(
           `http://localhost:3001/employees?_limit=${this.limit}&_skip=${this.skip}`
         );

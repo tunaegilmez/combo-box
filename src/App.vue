@@ -28,6 +28,7 @@
 <script>
 import ComboBox from "./components/ComboBox.vue";
 // import ThisTest from "./components/ThisTest.vue";
+import userService from "./service/userService.js";
 export default {
   components: {
     ComboBox,
@@ -47,10 +48,8 @@ export default {
   methods: {
     async getUsers() {
       try {
-        const response = await fetch(
-          `http://localhost:3000/users?_limit=${this.limit}&_skip=${this.skip}`
-        );
-        this.data = await response.json();
+        const response = await userService.getUser();
+        this.data = response.users.users;
       } catch (error) {
         console.log(error);
       }
@@ -59,10 +58,8 @@ export default {
     async loadMore() {
       this.limit += 10;
       try {
-        const response = await fetch(
-          `http://localhost:3000/users?_limit=${this.limit}&_skip=${this.skip}`
-        );
-        this.moreData = await response.json();
+        const response = await userService.loadMoreUsers(this.limit, this.skip);
+        this.moreData = response.users.users;
         this.data = [...this.moreData];
       } catch (error) {
         console.log(error);
