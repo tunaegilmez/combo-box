@@ -1,2 +1,2 @@
-export const userUrl = "http://localhost:3000/user";
-// export const employeeUrl = "http://localhost:3001/employees";
+export const userUrl = "https://dummyjson.com/users";
+// https://dummyjson.com/users/filter?key=firstName&value=Mavis

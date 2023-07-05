@@ -24,7 +24,20 @@ const loadMoreUsers = async (limit, skip) => {
   }
 };
 
+const filterSearchItem = async (key, value) => {
+  try {
+    const res = await fetch(`${userUrl}/filter?key=${key}&value=${value}`);
+    if (res.status == 200) {
+      const data = res.json();
+      return data;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export default {
   getUser,
   loadMoreUsers,
+  filterSearchItem,
 };

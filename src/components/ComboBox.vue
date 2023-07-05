@@ -62,14 +62,12 @@ export default {
   computed: {
     filterSearchItems() {
       return this.allData.filter(item =>
-        item.value[this.searchFilterItem]
+        item[this.searchFilterItem]
           .toLowerCase()
           .includes(this.searchTerm.toLowerCase())
       );
     },
   },
-
-  // HEDEF
 
   methods: {
     openDropdown() {

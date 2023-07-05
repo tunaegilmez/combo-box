@@ -12,8 +12,8 @@
       </template>
       <template v-slot:item="slotProps">
         <div>
-          {{ slotProps.data.key }} - {{ slotProps.data.value.name }} -
-          {{ slotProps.data.value.surname }}
+          {{ slotProps.data.id }} - {{ slotProps.data.firstName }} -
+          {{ slotProps.data.lastName }}
         </div>
       </template>
     </ComboBox>
@@ -38,7 +38,7 @@ export default {
     return {
       data: [],
       moreData: [],
-      searchForName: "name",
+      searchForName: "firstName",
       inputValue: "",
       limit: 10,
       skip: 0,
@@ -49,7 +49,8 @@ export default {
     async getUsers() {
       try {
         const response = await userService.getUser();
-        this.data = response.users.users;
+
+        this.data = response.users;
       } catch (error) {
         console.log(error);
       }
@@ -59,15 +60,28 @@ export default {
       this.limit += 10;
       try {
         const response = await userService.loadMoreUsers(this.limit, this.skip);
-        this.moreData = response.users.users;
+        this.moreData = response.users;
         this.data = [...this.moreData];
       } catch (error) {
         console.log(error);
       }
     },
 
+    async filterSearchItem() {
+      try {
+        const response = await userService.loadMoreUsers(
+          this.firstName,
+          this.searchTerm
+        );
+
+        this.data = response.users;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
     selectItem(item) {
-      this.inputValue = `${item.value.name} - ${item.value.surname}`;
+      this.inputValue = `${item.firstName} - ${item.lastName}`;
     },
   },
   mounted() {
