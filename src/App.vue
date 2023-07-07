@@ -1,11 +1,11 @@
 <template>
   <div id="app">
     <ComboBox
-      :allData="data"
-      :searchFilterItem="searchForName"
+      :allData="searchedData.length > 0 ? searchedData : data"
       @select-item="selectItem"
       :inputValue="inputValue"
       @load-more="loadMore"
+      @filter-search-items="filterSearchItems"
     >
       <template v-slot:menuTitle>
         <div>Users</div>
@@ -17,28 +17,22 @@
         </div>
       </template>
     </ComboBox>
-
-    <!-- Test Combo-Box -->
-    <!-- <div>
-      <ThisTest></ThisTest>
-    </div> -->
   </div>
 </template>
 
 <script>
 import ComboBox from "./components/ComboBox.vue";
-// import ThisTest from "./components/ThisTest.vue";
 import userService from "./service/userService.js";
+
 export default {
   components: {
     ComboBox,
-    // ThisTest,
   },
   data() {
     return {
       data: [],
       moreData: [],
-      searchForName: "firstName",
+      searchedData: [],
       inputValue: "",
       limit: 10,
       skip: 0,
@@ -67,14 +61,14 @@ export default {
       }
     },
 
-    async filterSearchItem() {
+    async filterSearchItems(searchTerm) {
       try {
-        const response = await userService.loadMoreUsers(
-          this.firstName,
-          this.searchTerm
+        const response = await userService.filterSearchItem(
+          "firstName",
+          searchTerm
         );
 
-        this.data = response.users;
+        this.searchedData = response.users;
       } catch (error) {
         console.log(error);
       }

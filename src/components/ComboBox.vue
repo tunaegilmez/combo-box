@@ -6,7 +6,7 @@
         type="text"
         placeholder="Type here"
         class="input input-bordered w-full pr-10"
-        v-model="searchTerm"
+        v-model="filterSearchItems"
         @focus="openDropdown"
         @keydown.arrow-up.prevent="highlightPrevItem"
         @keydown.arrow-down.prevent="highlightNextItem"
@@ -33,7 +33,7 @@
           </div>
           <div v-else>
             <li
-              v-for="(item, index) in filterSearchItems"
+              v-for="(item, index) in allData"
               :key="index"
               :class="{ 'bg-blue-500 text-white': highlightedIndex === index }"
               @click="selectItem(item)"
@@ -49,7 +49,7 @@
 
 <script>
 export default {
-  props: ["allData", "searchFilterItem", "inputValue"],
+  props: ["allData", "inputValue"],
   data() {
     return {
       isLoading: false,
@@ -60,18 +60,23 @@ export default {
   },
 
   computed: {
-    filterSearchItems() {
-      return this.allData.filter(item =>
-        item[this.searchFilterItem]
-          .toLowerCase()
-          .includes(this.searchTerm.toLowerCase())
-      );
+    filterSearchItems: {
+      get() {
+        return this.searchTerm;
+      },
+      set(value) {
+        this.searchTerm = value;
+        this.$emit("filter-search-items", value);
+      },
     },
   },
 
   methods: {
     openDropdown() {
       this.isDropdownOpen = true;
+    },
+    closeDropdown() {
+      this.isDropdownOpen = false;
     },
     highlightPrevItem() {
       if (this.highlightedIndex > 0) {
@@ -83,10 +88,12 @@ export default {
     highlightNextItem() {
       if (this.highlightedIndex < this.allData.length - 1) {
         this.highlightedIndex++;
+        console.log(this.highlightedIndex);
       } else {
         this.highlightedIndex = 0;
       }
     },
+
     async selectItem(item) {
       await this.$emit("select-item", item);
       this.searchTerm = this.inputValue;
@@ -100,6 +107,20 @@ export default {
         this.$emit("load-more");
       }
     },
+  },
+
+  mounted() {
+    document.addEventListener("click", event => {
+      const comboBox = this.$el;
+      const clickedElement = event.target;
+
+      if (!comboBox.contains(clickedElement)) {
+        this.closeDropdown();
+      }
+    });
+  },
+  beforeUnmount() {
+    document.removeEventListener("click", this.closeDropdown);
   },
 };
 </script>
