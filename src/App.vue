@@ -17,6 +17,10 @@
         </div>
       </template>
     </ComboBox>
+
+    <div>
+      <productView></productView>
+    </div>
   </div>
 </template>
 
@@ -24,9 +28,12 @@
 import ComboBox from "./components/ComboBox.vue";
 import userService from "./service/userService.js";
 
+import productView from "./Views/productCombo.vue";
+
 export default {
   components: {
     ComboBox,
+    productView,
   },
   data() {
     return {
